@@ -2,152 +2,856 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chemistry Quiz App</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>UniCamillus Chemistry Trainer</title>
   <style>
+    :root {
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    }
     body {
-      font-family: sans-serif;
-      padding: 20px;
-      background: #f5f5f5;
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      color: #e5e7eb;
+    }
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: #020617ee;
+      border-radius: 24px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      padding: 16px 16px 20px;
+    }
+    @media (min-width: 768px) {
+      .app {
+        padding: 20px 24px 24px;
+      }
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.4rem;
+    }
+    .sub {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .pill-group {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: #020617;
+    }
+    .pill {
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      color: #e5e7eb;
+    }
+    .pill.active {
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
+    }
+    .screen {
+      margin-top: 10px;
+      display: none;
+    }
+    .screen.active {
+      display: block;
     }
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    button {
-      width: 100%;
+      background: #020617cc;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
       padding: 12px;
-      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      border-radius: 999px;
       border: none;
-      border-radius: 8px;
-      background: #007aff;
-      color: white;
-      font-size: 16px;
+      background: #22c55e;
+      color: #020617;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 8px;
     }
-    .lang {
+    .btn.secondary {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      font-weight: 500;
+    }
+    .btn:disabled {
+      background: #1f2937;
+      color: #6b7280;
+    }
+    .q-header {
       display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 4px;
     }
-    .lang button {
-      flex: 1;
-      background: #555;
+    .q-text {
+      font-size: 1rem;
+      line-height: 1.5;
     }
-    .lang button.active {
-      background: #007aff;
+    .options {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .opt-btn {
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .opt-btn.correct {
+      border-color: #22c55e;
+      background: #22c55e22;
+      color: #bbf7d0;
+    }
+    .opt-btn.wrong {
+      border-color: #f97373;
+      background: #f9737322;
+      color: #fecaca;
+    }
+    .opt-btn.selected:not(.correct):not(.wrong) {
+      border-color: #22c55e;
+    }
+    .letter {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      margin-top: 3px;
+      min-width: 16px;
+    }
+    .state-tag {
+      margin-left: auto;
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .progress-outer {
+      margin-top: 8px;
+      height: 6px;
+      border-radius: 999px;
+      background: #020617;
+      overflow: hidden;
+    }
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      background: #22c55e;
+      transition: width 0.2s ease;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid #22c55e66;
+      background: #22c55e22;
+      color: #6ee7b7;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    ul.review-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    ul.review-list li {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #111827;
+      font-size: 0.85rem;
+    }
+    .tag-wrong {
+      color: #fecaca;
+      font-size: 0.7rem;
+    }
+    .tag-correct {
+      color: #bbf7d0;
+      font-size: 0.7rem;
+    }
+    .foot {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      color: #6b7280;
     }
   </style>
 </head>
-
 <body>
-  <div class="card">
-    <h1 id="title">Chemistry Quiz</h1>
-
-    <div class="lang">
-      <button id="jpBtn" class="active">日本語</button>
-      <button id="enBtn">English</button>
+<div class="app">
+  <div class="top-row">
+    <div>
+      <h1>UniCamillus Chemistry Trainer</h1>
+      <p class="sub" id="subtitle">
+        熱力学・平衡・酸塩基・緩衝溶液・反応速度論を、日本語と英語で500問トレーニング。
+      </p>
     </div>
-
-    <p id="question"></p>
-
-    <div id="answers"></div>
-
-    <p id="result" style="font-weight:bold; font-size:18px; margin-top:20px;"></p>
-
-    <button onclick="nextQuestion()">Next</button>
+    <div>
+      <div class="pill-group">
+        <button class="pill active" id="lang-ja">日本語</button>
+        <button class="pill" id="lang-en">English</button>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const quizzes = [
-      {
-        jp: {
-          q: "水の化学式はどれ？",
-          a: ["H2O", "CO2", "O2"],
-          c: 0
-        },
-        en: {
-          q: "What is the chemical formula for water?",
-          a: ["H2O", "CO2", "O2"],
-          c: 0
-        }
+  <!-- START SCREEN -->
+  <div id="screen-start" class="screen active">
+    <div class="card">
+      <p id="start-text">
+        1回につきランダムで20問出題されます。終了後に正答率と「間違えた問題だけ復習」モードが使えます。
+      </p>
+      <div class="stats-row" id="last-session-row" style="display:none;">
+        <span id="last-score-text"></span>
+        <span id="last-date-text"></span>
+      </div>
+    </div>
+    <button class="btn" id="btn-start-main">20問テストを開始</button>
+    <button class="btn secondary" id="btn-start-review" disabled>
+      復習モード（前回の間違えた問題）
+    </button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="q-header">
+        <span id="q-counter">Q 1 / 20</span>
+        <span id="q-topic"></span>
+      </div>
+      <div class="badge" id="badge-level">
+        <span class="badge-dot"></span>
+        <span id="badge-text">基礎レベル</span>
+      </div>
+      <p class="q-text" id="q-text"></p>
+    </div>
+    <div class="card">
+      <div id="options" class="options"></div>
+      <button class="btn" id="btn-submit">回答する</button>
+      <button class="btn secondary" id="btn-next" style="display:none;">次の問題へ</button>
+      <div id="explanation-box" style="display:none; margin-top:8px; font-size:0.85rem;">
+        <strong id="exp-title">解説</strong>
+        <div id="exp-body"></div>
+      </div>
+      <div class="stats-row">
+        <span id="stat-correct">正解数: 0</span>
+        <span id="stat-accuracy">正答率: 0%</span>
+      </div>
+      <div class="progress-outer">
+        <div class="progress-inner" id="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT / REVIEW SCREEN -->
+  <div id="screen-result" class="screen">
+    <div class="card">
+      <h2 id="result-title" style="margin:0 0 4px; font-size:1.1rem;">結果</h2>
+      <p id="result-summary" style="margin:0 0 6px; font-size:0.9rem;"></p>
+      <div class="stats-row">
+        <span id="result-detail-1"></span>
+        <span id="result-detail-2"></span>
+      </div>
+    </div>
+    <div class="card" id="review-card" style="display:none;">
+      <p style="font-size:0.85rem; margin:0 0 6px;" id="review-title">
+        間違えた問題
+      </p>
+      <ul class="review-list" id="review-list"></ul>
+    </div>
+    <button class="btn" id="btn-restart-main">もう一度 20問テスト</button>
+    <button class="btn secondary" id="btn-restart-review" disabled>
+      間違えた問題だけで再テスト
+    </button>
+  </div>
+
+  <p class="foot" id="footer">
+    このアプリは UniCamillus 医学部レベルの一般化学を想定した個人学習用ツールです。成績は端末内ローカルに保存されます。
+  </p>
+</div>
+
+<script>
+  // ====== 言語・テキスト ======
+  let lang = "ja";
+
+  const TEXT = {
+    subtitle: {
+      ja: "熱力学・平衡・酸塩基・緩衝溶液・反応速度論を、日本語と英語で500問トレーニング。",
+      en: "Practice thermodynamics, equilibrium, acids & bases, buffers and kinetics with 500 questions in Japanese and English."
+    },
+    startText: {
+      ja: "1回につきランダムで20問出題されます。終了後に正答率と「間違えた問題だけ復習」モードが使えます。",
+      en: "Each session gives 20 random questions. After finishing, you can see your score and retry only the questions you missed."
+    },
+    btnMain: { ja: "20問テストを開始", en: "Start 20-question test" },
+    btnReview: { ja: "復習モード（前回の間違えた問題）", en: "Review mode (missed questions only)" },
+    btnSubmit: { ja: "回答する", en: "Submit answer" },
+    btnNext: { ja: "次の問題へ", en: "Next question" },
+    expTitle: { ja: "解説", en: "Explanation" },
+    statCorrect: { ja: "正解数", en: "Correct" },
+    statAccuracy: { ja: "正答率", en: "Accuracy" },
+    levelBasic: { ja: "基礎レベル", en: "Basic level" },
+    levelInter: { ja: "標準〜応用レベル", en: "Intermediate level" },
+    resultTitle: { ja: "結果", en: "Result" },
+    resultSummary: {
+      ja: (s, total) => `20問中 ${s} 問正解（${total}%）でした。`,
+      en: (s, total) => `You answered ${s} out of 20 questions correctly (${total}%).`
+    },
+    resultDetail1: {
+      ja: (c) => `連続正解数のベスト: ${c}`,
+      en: (c) => `Best streak: ${c} correct in a row`
+    },
+    resultDetail2: {
+      ja: (w) => `間違えた問題: ${w} 問`,
+      en: (w) => `Number of missed questions: ${w}`
+    },
+    reviewTitle: {
+      ja: "間違えた問題（要復習）",
+      en: "Questions to review (missed)"
+    },
+    tagYour: { ja: "あなたの回答", en: "Your answer" },
+    tagCorrect: { ja: "正解", en: "Correct answer" },
+    tagWrong: { ja: "不正解", en: "Wrong", },
+    btnRestartMain: {
+      ja: "もう一度 20問テスト",
+      en: "Take another 20-question test"
+    },
+    btnRestartReview: {
+      ja: "間違えた問題だけで再テスト",
+      en: "Retest only missed questions"
+    },
+    footer: {
+      ja: "このアプリは UniCamillus 医学部レベルの一般化学を想定した個人学習用ツールです。成績は端末内ローカルに保存されます。",
+      en: "This app targets the level of General Chemistry for UniCamillus medical students. Your scores are stored only on this device."
+    },
+    qCounter: {
+      ja: (i, total) => `問題 ${i} / ${total}`,
+      en: (i, total) => `Question ${i} / ${total}`
+    },
+    correctLabel: { ja: "正解", en: "Correct" },
+    wrongLabel: { ja: "不正解", en: "Wrong" },
+  };
+
+  // ====== 問題バンク ======
+  // 構造: id, topic, level, q:{ja,en}, choices:[{ja,en}], correct, exp:{ja,en}
+  const BASE_QUESTIONS = [
+    {
+      id: "thermo-1",
+      topic: "Thermodynamics",
+      level: "intermediate",
+      q: {
+        ja: "反応 A → B において ΔH = −40 kJ/mol, ΔS = −120 J/mol·K のとき、この反応が自発的になるのはどの温度領域ですか？",
+        en: "For the reaction A → B, ΔH = −40 kJ/mol and ΔS = −120 J/mol·K. In which temperature range is the reaction spontaneous?"
       },
-      {
-        jp: {
-          q: "塩酸の主成分は？",
-          a: ["HCl", "NaCl", "H2SO4"],
-          c: 0
-        },
-        en: {
-          q: "What is the main component of hydrochloric acid?",
-          a: ["HCl", "NaCl", "H2SO4"],
-          c: 0
-        }
+      choices: [
+        { ja: "すべての温度で自発的", en: "Spontaneous at all temperatures" },
+        { ja: "低温でのみ自発的", en: "Spontaneous only at low temperatures" },
+        { ja: "高温でのみ自発的", en: "Spontaneous only at high temperatures" },
+        { ja: "いかなる温度でも自発的でない", en: "Never spontaneous" },
+        { ja: "ΔH と ΔS からは判断できない", en: "Cannot be determined from ΔH and ΔS" },
+      ],
+      correct: 1,
+      exp: {
+        ja: "ΔG = ΔH − TΔS。ΔH<0 かつ ΔS<0 のときは低温で ΔH 項が支配的になり、ΔG<0 となるので低温で自発的。",
+        en: "ΔG = ΔH − TΔS. With ΔH<0 and ΔS<0, the reaction is spontaneous at low T where the negative ΔH term dominates and ΔG<0."
+      }
+    },
+    {
+      id: "thermo-2",
+      topic: "Thermodynamics",
+      level: "basic",
+      q: {
+        ja: "25 ℃ における反応の平衡定数が K = 4.0×10⁻⁵ のとき、標準ギブズエネルギー ΔG° の符号は？",
+        en: "A reaction has K = 4.0×10⁻⁵ at 25 °C. What is the sign of ΔG°?"
       },
-      {
-        jp: {
-          q: "酸と塩基の反応でできるものは？",
-          a: ["塩と水", "酸素", "二酸化炭素"],
-          c: 0
-        },
-        en: {
-          q: "What is produced by an acid-base reaction?",
-          a: ["Salt and water", "Oxygen", "Carbon dioxide"],
-          c: 0
+      choices: [
+        { ja: "正", en: "Positive" },
+        { ja: "負", en: "Negative" },
+        { ja: "ゼロ", en: "Zero" },
+        { ja: "温度によってのみ決まる", en: "Depends only on temperature" },
+        { ja: "情報が足りない", en: "Cannot be determined" },
+      ],
+      correct: 0,
+      exp: {
+        ja: "ΔG° = −RT lnK。K<1 なら lnK<0 なので ΔG° は正。",
+        en: "ΔG° = −RT lnK. If K<1, lnK is negative, so ΔG° is positive."
+      }
+    },
+    {
+      id: "eq-1",
+      topic: "Equilibrium",
+      level: "basic",
+      q: {
+        ja: "平衡 CaCO₃(s) ⇄ CaO(s) + CO₂(g) において、Kc の式に含めない種の組み合わせは？",
+        en: "For CaCO₃(s) ⇄ CaO(s) + CO₂(g), which species are omitted from the Kc expression?"
+      },
+      choices: [
+        { ja: "CaCO₃ のみ", en: "CaCO₃ only" },
+        { ja: "CaO のみ", en: "CaO only" },
+        { ja: "CO₂ のみ", en: "CO₂ only" },
+        { ja: "CaCO₃ と CaO", en: "CaCO₃ and CaO" },
+        { ja: "すべて含める", en: "All are included" },
+      ],
+      correct: 3,
+      exp: {
+        ja: "純粋な固体は平衡定数の式に含めないので Kc = [CO₂]。",
+        en: "Pure solids are omitted, so Kc = [CO₂]; CaCO₃(s) and CaO(s) are omitted."
+      }
+    },
+    {
+      id: "acid-1",
+      topic: "Acids & Bases",
+      level: "basic",
+      q: {
+        ja: "Brønsted–Lowry の定義で「酸」とはどのような物質ですか？",
+        en: "According to the Brønsted–Lowry definition, what is an acid?"
+      },
+      choices: [
+        { ja: "電子対を受け取る物質", en: "Electron-pair acceptor" },
+        { ja: "プロトンを受け取る物質", en: "Proton (H⁺) acceptor" },
+        { ja: "プロトンを与える物質", en: "Proton (H⁺) donor" },
+        { ja: "電子対を与える物質", en: "Electron-pair donor" },
+        { ja: "pH を上げる物質", en: "Any substance that raises pH" },
+      ],
+      correct: 2,
+      exp: {
+        ja: "Brønsted–Lowry 酸は「プロトン (H⁺) を与える物質」。",
+        en: "A Brønsted–Lowry acid is a proton (H⁺) donor."
+      }
+    },
+    {
+      id: "buffer-1",
+      topic: "Buffer",
+      level: "intermediate",
+      q: {
+        ja: "弱酸 HA と共役塩基 A⁻ からなる緩衝溶液に少量の強酸を加えると、主にどのような変化が起こりますか？",
+        en: "In a buffer of weak acid HA and conjugate base A⁻, what mainly happens when a small amount of strong acid is added?"
+      },
+      choices: [
+        { ja: "pH が大きく低下する", en: "pH drops sharply" },
+        { ja: "pH はほとんど変わらない", en: "pH stays almost constant" },
+        { ja: "pH が上昇する", en: "pH increases" },
+        { ja: "[A⁻] が減少する", en: "[A⁻] decreases" },
+        { ja: "B と D が正しい", en: "Both B and D are correct" },
+      ],
+      correct: 4,
+      exp: {
+        ja: "加えた H⁺ は主に A⁻ と反応して HA になるので [A⁻] が減少しつつ、pH 変化は小さい。",
+        en: "Added H⁺ is neutralized by A⁻ forming HA, so [A⁻] decreases and pH changes only slightly."
+      }
+    },
+    {
+      id: "kin-1",
+      topic: "Kinetics",
+      level: "basic",
+      q: {
+        ja: "速度式 v = k[A][B] の反応について誤っている記述はどれですか？",
+        en: "For a reaction with rate law v = k[A][B], which statement is FALSE?"
+      },
+      choices: [
+        { ja: "全反応次数は 2 である", en: "Overall order is 2" },
+        { ja: "A に関して一次である", en: "First order in A" },
+        { ja: "B に関して一次である", en: "First order in B" },
+        { ja: "k の単位は s⁻¹ である", en: "k has units of s⁻¹" },
+        { ja: "速度は [A] と [B] に依存する", en: "Rate depends on [A] and [B]" },
+      ],
+      correct: 3,
+      exp: {
+        ja: "二次反応なので k の単位は通常 M⁻¹·s⁻¹。",
+        en: "For a second-order reaction, units of k are typically M⁻¹·s⁻¹, not s⁻¹."
+      }
+    }
+  ];
+
+  // 自動生成問題（pH 計算など）で 500問近くまで増やす
+  const AUTO_QUESTIONS = [];
+
+  function generatePHQuestions(count) {
+    for (let i = 0; i < count; i++) {
+      const mantissa = Math.floor(Math.random() * 9) + 1; // 1〜9
+      const exponent = Math.floor(Math.random() * 7) + 1; // 1〜7
+      const conc = mantissa + "×10⁻" + exponent;
+      const pH = exponent - Math.log10(mantissa);
+      const truePH = Math.round(pH * 100) / 100;
+
+      // 選択肢生成（±0.3〜1.0 くらいでズラす）
+      const options = [];
+      const correctPos = Math.floor(Math.random() * 5);
+      for (let j = 0; j < 5; j++) {
+        if (j === correctPos) {
+          options.push(truePH);
+        } else {
+          let delta = (Math.random() * 1.2 - 0.6); // -0.6〜0.6
+          let val = Math.round((truePH + delta) * 100) / 100;
+          if (val === truePH) val += 0.14;
+          options.push(val);
         }
       }
-    ];
 
-    let current = 0;
-    let lang = "jp";
-
-    document.getElementById("jpBtn").onclick = () => switchLang("jp");
-    document.getElementById("enBtn").onclick = () => switchLang("en");
-
-    function switchLang(l) {
-      lang = l;
-      document.getElementById("jpBtn").classList.toggle("active", l === "jp");
-      document.getElementById("enBtn").classList.toggle("active", l === "en");
-      loadQuestion();
-    }
-
-    function loadQuestion() {
-      const q = quizzes[current][lang];
-      document.getElementById("question").textContent = q.q;
-      const answersDiv = document.getElementById("answers");
-      answersDiv.innerHTML = "";
-      
-      q.a.forEach((ans, idx) => {
-        const btn = document.createElement("button");
-        btn.textContent = ans;
-        btn.onclick = () => check(idx);
-        answersDiv.appendChild(btn);
+      AUTO_QUESTIONS.push({
+        id: "ph-" + i,
+        topic: "Acids & Bases",
+        level: "basic",
+        q: {
+          ja: `[H₃O⁺] = ${conc} M の水溶液の pH（小数第2位まで）は？`,
+          en: `What is the pH (to two decimal places) of a solution with [H₃O⁺] = ${conc} M?`
+        },
+        choices: options.map(v => ({
+          ja: `pH ≈ ${v.toFixed(2)}`,
+          en: `pH ≈ ${v.toFixed(2)}`
+        })),
+        correct: correctPos,
+        exp: {
+          ja: `pH = −log[H₃O⁺] より pH ≈ ${truePH.toFixed(2)}。`,
+          en: `Using pH = −log[H₃O⁺], the pH is about ${truePH.toFixed(2)}.`
+        }
       });
-
-      document.getElementById("result").textContent = "";
     }
+  }
 
-    function check(i) {
-      const correct = quizzes[current][lang].c;
-      const result = document.getElementById("result");
-      if (i === correct) {
-        result.textContent = lang === "jp" ? "正解！" : "Correct!";
-        result.style.color = "green";
-      } else {
-        result.textContent = lang === "jp" ? "不正解…" : "Wrong...";
-        result.style.color = "red";
+  generatePHQuestions(480); // BASE_QUESTIONS(約20想定) + 480 ≒ 500
+
+  const QUESTION_BANK = BASE_QUESTIONS.concat(AUTO_QUESTIONS);
+
+  // ====== クイズ状態管理 ======
+  const TOTAL_PER_SESSION = 20;
+  let sessionQuestions = [];
+  let sessionAnswers = []; // {index, chosen, correct}
+  let currentIndex = 0;
+  let score = 0;
+  let bestStreak = 0;
+  let currentStreak = 0;
+
+  // DOM
+  const screenStart = document.getElementById("screen-start");
+  const screenQuiz = document.getElementById("screen-quiz");
+  const screenResult = document.getElementById("screen-result");
+  const subtitle = document.getElementById("subtitle");
+  const startText = document.getElementById("start-text");
+  const footer = document.getElementById("footer");
+  const btnStartMain = document.getElementById("btn-start-main");
+  const btnStartReview = document.getElementById("btn-start-review");
+  const btnRestartMain = document.getElementById("btn-restart-main");
+  const btnRestartReview = document.getElementById("btn-restart-review");
+  const qCounter = document.getElementById("q-counter");
+  const qTopic = document.getElementById("q-topic");
+  const qText = document.getElementById("q-text");
+  const badgeLevel = document.getElementById("badge-text");
+  const optionsDiv = document.getElementById("options");
+  const btnSubmit = document.getElementById("btn-submit");
+  const btnNext = document.getElementById("btn-next");
+  const explanationBox = document.getElementById("explanation-box");
+  const expTitle = document.getElementById("exp-title");
+  const expBody = document.getElementById("exp-body");
+  const statCorrect = document.getElementById("stat-correct");
+  const statAccuracy = document.getElementById("stat-accuracy");
+  const progressBar = document.getElementById("progress-bar");
+  const resultTitle = document.getElementById("result-title");
+  const resultSummary = document.getElementById("result-summary");
+  const resultDetail1 = document.getElementById("result-detail-1");
+  const resultDetail2 = document.getElementById("result-detail-2");
+  const reviewCard = document.getElementById("review-card");
+  const reviewTitle = document.getElementById("review-title");
+  const reviewList = document.getElementById("review-list");
+  const lastSessionRow = document.getElementById("last-session-row");
+  const lastScoreText = document.getElementById("last-score-text");
+  const lastDateText = document.getElementById("last-date-text");
+
+  // ====== 言語切り替え ======
+  function applyLanguage() {
+    subtitle.textContent = TEXT.subtitle[lang];
+    startText.textContent = TEXT.startText[lang];
+    footer.textContent = TEXT.footer[lang];
+    btnStartMain.textContent = TEXT.btnMain[lang];
+    btnStartReview.textContent = TEXT.btnReview[lang];
+    btnSubmit.textContent = TEXT.btnSubmit[lang];
+    btnNext.textContent = TEXT.btnNext[lang];
+    expTitle.textContent = TEXT.expTitle[lang];
+    btnRestartMain.textContent = TEXT.btnRestartMain[lang];
+    btnRestartReview.textContent = TEXT.btnRestartReview[lang];
+
+    document.getElementById("lang-ja").classList.toggle("active", lang === "ja");
+    document.getElementById("lang-en").classList.toggle("active", lang === "en");
+
+    // 画面に出ているテキストも更新
+    if (screenQuiz.classList.contains("active")) renderQuestion();
+    if (screenResult.classList.contains("active")) renderResult();
+    updateLastSessionFromStorage();
+  }
+
+  document.getElementById("lang-ja").onclick = () => { lang = "ja"; applyLanguage(); };
+  document.getElementById("lang-en").onclick = () => { lang = "en"; applyLanguage(); };
+
+  // ====== ユーティリティ ======
+  function shuffle(array) {
+    const a = array.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function showScreen(name) {
+    [screenStart, screenQuiz, screenResult].forEach(el => el.classList.remove("active"));
+    if (name === "start") screenStart.classList.add("active");
+    if (name === "quiz") screenQuiz.classList.add("active");
+    if (name === "result") screenResult.classList.add("active");
+  }
+
+  // ====== セッション開始 ======
+  function startSession(mode) {
+    const pool = (mode === "review" && getStoredWrongIds().length)
+      ? QUESTION_BANK.filter(q => getStoredWrongIds().includes(q.id))
+      : QUESTION_BANK;
+
+    sessionQuestions = shuffle(pool).slice(0, TOTAL_PER_SESSION);
+    sessionAnswers = [];
+    currentIndex = 0;
+    score = 0;
+    bestStreak = 0;
+    currentStreak = 0;
+
+    btnSubmit.disabled = false;
+    btnNext.style.display = "none";
+    explanationBox.style.display = "none";
+
+    showScreen("quiz");
+    renderQuestion();
+  }
+
+  // ====== 問題表示 ======
+  function renderQuestion() {
+    const q = sessionQuestions[currentIndex];
+    if (!q) return;
+
+    qCounter.textContent = TEXT.qCounter[lang](currentIndex + 1, TOTAL_PER_SESSION);
+    qTopic.textContent = q.topic;
+    badgeLevel.textContent = q.level === "basic" ? TEXT.levelBasic[lang] : TEXT.levelInter[lang];
+    qText.textContent = q.q[lang];
+
+    optionsDiv.innerHTML = "";
+    q.choices.forEach((c, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.dataset.index = idx;
+      const letter = document.createElement("span");
+      letter.className = "letter";
+      letter.textContent = String.fromCharCode(65 + idx) + ".";
+      const txt = document.createElement("span");
+      txt.textContent = c[lang];
+      btn.appendChild(letter);
+      btn.appendChild(txt);
+      btn.onclick = () => {
+        if (btnSubmit.disabled) return;
+        Array.from(optionsDiv.children).forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+      };
+      optionsDiv.appendChild(btn);
+    });
+
+    explanationBox.style.display = "none";
+    btnSubmit.style.display = "block";
+    btnNext.style.display = "none";
+
+    const progress = Math.round((currentIndex / TOTAL_PER_SESSION) * 100);
+    progressBar.style.width = progress + "%";
+
+    statCorrect.textContent = TEXT.statCorrect[lang] + ": " + score;
+    statAccuracy.textContent =
+      TEXT.statAccuracy[lang] + ": " +
+      (sessionAnswers.length ? Math.round(score / sessionAnswers.length * 100) : 0) + "%";
+  }
+
+  // ====== 回答処理 ======
+  btnSubmit.onclick = () => {
+    const q = sessionQuestions[currentIndex];
+    const selectedBtn = Array.from(optionsDiv.children).find(b => b.classList.contains("selected"));
+    if (!selectedBtn) return;
+    const chosen = parseInt(selectedBtn.dataset.index, 10);
+
+    const isCorrect = chosen === q.correct;
+    if (isCorrect) {
+      score++;
+      currentStreak++;
+      if (currentStreak > bestStreak) bestStreak = currentStreak;
+    } else {
+      currentStreak = 0;
+    }
+    sessionAnswers.push({ index: currentIndex, chosen, correct: q.correct, id: q.id });
+
+    // マーク
+    Array.from(optionsDiv.children).forEach((b, idx) => {
+      b.onclick = null;
+      if (idx === q.correct) {
+        b.classList.add("correct");
       }
+      if (idx === chosen && idx !== q.correct) {
+        b.classList.add("wrong");
+      }
+    });
+
+    const tag = document.createElement("span");
+    tag.className = "state-tag";
+    tag.textContent = isCorrect ? TEXT.correctLabel[lang] : TEXT.wrongLabel[lang];
+    selectedBtn.appendChild(tag);
+
+    // 解説
+    expTitle.textContent = TEXT.expTitle[lang];
+    expBody.textContent = q.exp[lang];
+    explanationBox.style.display = "block";
+
+    // ステータス
+    statCorrect.textContent = TEXT.statCorrect[lang] + ": " + score;
+    statAccuracy.textContent =
+      TEXT.statAccuracy[lang] + ": " +
+      Math.round(score / sessionAnswers.length * 100) + "%";
+
+    btnSubmit.style.display = "none";
+    btnNext.style.display = "block";
+  };
+
+  btnNext.onclick = () => {
+    if (currentIndex < TOTAL_PER_SESSION - 1) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      finishSession();
+    }
+  };
+
+  // ====== 結果表示 ======
+  function finishSession() {
+    const totalPercent = Math.round(score / TOTAL_PER_SESSION * 100);
+    const wrong = TOTAL_PER_SESSION - score;
+
+    // 保存（復習用）
+    const wrongIds = sessionAnswers.filter(a => a.chosen !== a.correct).map(a => a.id);
+    localStorage.setItem("chem_last_wrong_ids", JSON.stringify(wrongIds));
+    localStorage.setItem("chem_last_score", String(totalPercent));
+    localStorage.setItem("chem_last_date", new Date().toISOString());
+    localStorage.setItem("chem_last_best_streak", String(bestStreak));
+
+    resultTitle.textContent = TEXT.resultTitle[lang];
+    resultSummary.textContent = TEXT.resultSummary[lang](score, totalPercent);
+    resultDetail1.textContent = TEXT.resultDetail1[lang](bestStreak);
+    resultDetail2.textContent = TEXT.resultDetail2[lang](wrong);
+
+    // 間違えた問題表示
+    reviewList.innerHTML = "";
+    if (wrong > 0) {
+      reviewTitle.textContent = TEXT.reviewTitle[lang];
+      const missed = sessionAnswers.filter(a => a.chosen !== a.correct);
+      missed.forEach(m => {
+        const q = sessionQuestions[m.index];
+        const li = document.createElement("li");
+        const qText = document.createElement("div");
+        qText.textContent = q.q[lang];
+        const your = document.createElement("div");
+        your.className = "tag-wrong";
+        your.textContent = TEXT.tagYour[lang] + ": " + q.choices[m.chosen][lang];
+        const corr = document.createElement("div");
+        corr.className = "tag-correct";
+        corr.textContent = TEXT.tagCorrect[lang] + ": " + q.choices[q.correct][lang];
+        li.appendChild(qText);
+        li.appendChild(your);
+        li.appendChild(corr);
+        reviewList.appendChild(li);
+      });
+      reviewCard.style.display = "block";
+      btnRestartReview.disabled = false;
+    } else {
+      reviewCard.style.display = "none";
+      btnRestartReview.disabled = true;
     }
 
-    function nextQuestion() {
-      current = (current + 1) % quizzes.length;
-      loadQuestion();
-    }
+    showScreen("result");
+    updateLastSessionFromStorage();
+  }
 
-    loadQuestion();
-  </script>
+  // ====== 復習用データ ======
+  function getStoredWrongIds() {
+    try {
+      const raw = localStorage.getItem("chem_last_wrong_ids");
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr;
+    } catch {
+      return [];
+    }
+  }
+
+  function updateLastSessionFromStorage() {
+    const score = localStorage.getItem("chem_last_score");
+    const date = localStorage.getItem("chem_last_date");
+    if (!score || !date) {
+      lastSessionRow.style.display = "none";
+      btnStartReview.disabled = !getStoredWrongIds().length;
+      return;
+    }
+    const d = new Date(date);
+    lastSessionRow.style.display = "flex";
+    lastScoreText.textContent =
+      (lang === "ja" ? "前回のスコア: " : "Last score: ") + score + "%";
+    lastDateText.textContent =
+      (lang === "ja" ? "実施日: " : "Date: ") +
+      d.toLocaleString();
+    btnStartReview.disabled = !getStoredWrongIds().length;
+  }
+
+  // ====== ボタンイベント ======
+  btnStartMain.onclick = () => startSession("main");
+  btnRestartMain.onclick = () => startSession("main");
+  btnStartReview.onclick = () => startSession("review");
+  btnRestartReview.onclick = () => startSession("review");
+
+  // 初期化
+  applyLanguage();
+  updateLastSessionFromStorage();
+</script>
 </body>
 </html>
