@@ -28,17 +28,11 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
       padding: 16px 16px 20px;
     }
-    @media (min-width: 768px) {
+    @media (min-width: 768px){
       .app { padding: 20px 24px 24px; }
     }
-    h1 {
-      margin: 0 0 4px;
-      font-size: 1.4rem;
-    }
-    .sub {
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    .sub { font-size: 0.8rem; color: #9ca3af; }
     .top-row {
       display: flex;
       flex-wrap: wrap;
@@ -103,12 +97,12 @@
       color: #9ca3af;
       margin: 6px 0 4px;
     }
-    .topic-buttons {
+    .topic-buttons, .difficulty-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
-    .topic-btn {
+    .topic-btn, .difficulty-btn {
       border-radius: 999px;
       border: 1px solid #374151;
       background: #020617;
@@ -116,7 +110,7 @@
       font-size: 0.75rem;
       padding: 5px 10px;
     }
-    .topic-btn.active {
+    .topic-btn.active, .difficulty-btn.active {
       background: #22c55e;
       color: #020617;
       border-color: #22c55e;
@@ -130,10 +124,7 @@
       color: #9ca3af;
       margin-bottom: 4px;
     }
-    .q-text {
-      font-size: 1rem;
-      line-height: 1.5;
-    }
+    .q-text { font-size: 1rem; line-height: 1.5; }
     .options {
       margin-top: 8px;
       display: flex;
@@ -229,19 +220,9 @@
       border-bottom: 1px solid #111827;
       font-size: 0.85rem;
     }
-    .tag-wrong {
-      color: #fecaca;
-      font-size: 0.75rem;
-    }
-    .tag-correct {
-      color: #bbf7d0;
-      font-size: 0.75rem;
-    }
-    .tag-exp {
-      color: #9ca3af;
-      font-size: 0.75rem;
-      margin-top: 2px;
-    }
+    .tag-wrong  { color:#fecaca; font-size:0.75rem; }
+    .tag-correct{ color:#bbf7d0; font-size:0.75rem; }
+    .tag-exp    { color:#9ca3af; font-size:0.75rem; margin-top:2px; }
 
     .foot {
       margin-top: 10px;
@@ -256,7 +237,7 @@
     <div>
       <h1>UniCamillus Chemistry Trainer</h1>
       <p class="sub" id="subtitle">
-        熱力学・平衡・酸塩基・緩衝溶液・反応速度論を、日本語と英語でトレーニング。
+        ホーム画面から分野と難易度を選んで、10問ずつトレーニングできます。
       </p>
     </div>
     <div>
@@ -267,23 +248,25 @@
     </div>
   </div>
 
-  <!-- ホーム画面（カテゴリー選択） -->
+  <!-- ホーム画面 -->
   <div id="screen-home" class="screen active">
     <div class="card">
       <p id="home-text">
-        ホーム画面から分野を選び、各分野ごとに 1 回 20 問のテストができます。
+        分野と難易度を選んで「10問テスト」を押すと、その条件からランダムに10問出題されます。
       </p>
-      <p class="topic-box-title" id="topic-title">
-        分野を選択:
-      </p>
+
+      <p class="topic-box-title" id="topic-title">分野を選択:</p>
       <div id="topic-buttons" class="topic-buttons"></div>
+
+      <p class="topic-box-title" id="diff-title">難易度を選択:</p>
+      <div id="difficulty-buttons" class="difficulty-buttons"></div>
 
       <div class="stats-row" id="last-session-row" style="display:none;">
         <span id="last-score-text"></span>
         <span id="last-date-text"></span>
       </div>
     </div>
-    <button class="btn" id="btn-start-main">選んだ分野で20問テスト</button>
+    <button class="btn" id="btn-start-main">選んだ条件で10問テスト</button>
     <button class="btn secondary" id="btn-start-review" disabled>
       復習モード（前回の間違えた問題）
     </button>
@@ -293,7 +276,7 @@
   <div id="screen-quiz" class="screen">
     <div class="card">
       <div class="q-header">
-        <span id="q-counter">Q 1 / 20</span>
+        <span id="q-counter">Q 1 / 10</span>
         <span id="q-topic"></span>
       </div>
       <div class="badge">
@@ -304,10 +287,12 @@
     </div>
     <div class="card">
       <div id="options" class="options"></div>
+
       <button class="btn" id="btn-submit">回答する</button>
       <button class="btn secondary" id="btn-next" style="display:none;">次の問題へ</button>
+      <!-- 途中でもホームに戻れるボタン -->
+      <button class="btn secondary" id="btn-quit-home">ホームに戻る（この回は破棄）</button>
 
-      <!-- 解説：その場で必ず表示 -->
       <div id="explanation-box" style="display:none; margin-top:8px; font-size:0.85rem;">
         <strong id="exp-title">解説</strong>
         <div id="exp-body"></div>
@@ -323,7 +308,7 @@
     </div>
   </div>
 
-  <!-- 結果・復習画面 -->
+  <!-- 結果画面 -->
   <div id="screen-result" class="screen">
     <div class="card">
       <h2 id="result-title" style="margin:0 0 4px; font-size:1.1rem;">結果</h2>
@@ -341,7 +326,7 @@
       <ul class="review-list" id="review-list"></ul>
     </div>
 
-    <button class="btn" id="btn-restart-main">もう一度 20問テスト</button>
+    <button class="btn" id="btn-restart-main">もう一度 10問テスト</button>
     <button class="btn secondary" id="btn-restart-review" disabled>
       間違えた問題だけで再テスト
     </button>
@@ -356,325 +341,214 @@
 </div>
 
 <script>
-  // ====== グローバル状態 ======
+  // ====== 状態 ======
   let lang = "ja";
-  let selectedTopic = "all"; // all / thermo / equilibrium / acids / buffer / kinetics
-  const TOTAL_PER_SESSION = 20;
+  let selectedTopic = "all";        // all / thermo / equilibrium / acids / buffer / kinetics
+  let selectedLevel = "all";        // all / basic / intermediate
+  const TOTAL_PER_SESSION = 10;     // ★ 10問固定
 
   let sessionQuestions = [];
-  let sessionAnswers = []; // {index, chosen, correct, id}
+  let sessionAnswers = [];
   let currentIndex = 0;
   let score = 0;
   let bestStreak = 0;
   let currentStreak = 0;
 
-  // ====== テキスト ======
+  // ====== テキスト類 ======
   const TOPIC_DEFS = {
-    all:   { ja: "全分野",       en: "All topics" },
-    thermo:{ ja: "熱力学",       en: "Thermodynamics" },
-    equilibrium:{ ja: "化学平衡", en: "Equilibrium" },
-    acids: { ja: "酸と塩基",     en: "Acids & Bases" },
-    buffer:{ ja: "緩衝溶液",     en: "Buffer solutions" },
-    kinetics:{ ja: "反応速度論", en: "Kinetics" }
+    all:        { ja:"全分野",       en:"All topics" },
+    thermo:     { ja:"熱力学",       en:"Thermodynamics" },
+    equilibrium:{ ja:"化学平衡",     en:"Equilibrium" },
+    acids:      { ja:"酸と塩基",     en:"Acids & Bases" },
+    buffer:     { ja:"緩衝溶液",     en:"Buffer solutions" },
+    kinetics:   { ja:"反応速度論",   en:"Kinetics" }
+  };
+  const LEVEL_DEFS = {
+    all:        { ja:"全レベル",     en:"All levels" },
+    basic:      { ja:"基礎",         en:"Basic" },
+    intermediate:{ja:"応用",         en:"Intermediate" }
   };
 
   const TEXT = {
     subtitle: {
-      ja: "ホーム画面から分野を選んで、20問ずつトレーニングできます。間違えた問題には解説つき。",
-      en: "Choose a topic from the home screen and practice 20 questions at a time. Explanations are shown for every question."
+      ja:"ホーム画面から分野と難易度を選んで、10問ずつトレーニングできます。",
+      en:"Choose topic and difficulty on the home screen and practice 10 questions at a time."
     },
     homeText: {
-      ja: "分野を選んで「20問テスト」を押すと、その分野からランダムに20問出題されます。",
-      en: "Select a topic and tap the button to start a 20-question test from that topic."
+      ja:"分野と難易度を選んで「10問テスト」を押すと、その条件からランダムに10問出題されます。",
+      en:"Select topic and difficulty, then start a 10-question test from that pool."
     },
-    topicTitle: {
-      ja: "分野を選択:",
-      en: "Choose topic:"
+    topicTitle:{ ja:"分野を選択:", en:"Choose topic:" },
+    diffTitle: { ja:"難易度を選択:", en:"Choose difficulty:" },
+    btnMain:   { ja:"選んだ条件で10問テスト", en:"Start 10-question test" },
+    btnReview: { ja:"復習モード（前回の間違えた問題）", en:"Review mode (missed questions)" },
+    btnSubmit: { ja:"回答する", en:"Submit answer" },
+    btnNext:   { ja:"次の問題へ", en:"Next question" },
+    btnQuitHome:{ ja:"ホームに戻る（この回は破棄）", en:"Back to home (discard this run)" },
+    expTitle:  { ja:"解説", en:"Explanation" },
+    statCorrect:{ ja:"正解数", en:"Correct" },
+    statAccuracy:{ ja:"正答率", en:"Accuracy" },
+    levelBasic: { ja:"レベル: 基礎", en:"Level: Basic" },
+    levelInter: { ja:"レベル: 応用", en:"Level: Intermediate" },
+    qCounter:{
+      ja:(i,t)=>`問題 ${i} / ${t}`,
+      en:(i,t)=>`Question ${i} / ${t}`
     },
-    btnMain: {
-      ja: "選んだ分野で20問テスト",
-      en: "Start 20-question test for selected topic"
+    resultTitle:{ ja:"結果", en:"Result" },
+    resultSummary:{
+      ja:(s,p,t,l)=>`${TOPIC_DEFS[t].ja}・${LEVEL_DEFS[l].ja}：${TOTAL_PER_SESSION}問中 ${s} 問正解（${p}%）でした。`,
+      en:(s,p,t,l)=>`${TOPIC_DEFS[t].en} / ${LEVEL_DEFS[l].en}: you answered ${s} of ${TOTAL_PER_SESSION} questions correctly (${p}%).`
     },
-    btnReview: {
-      ja: "復習モード（前回の間違えた問題）",
-      en: "Review mode (missed questions from last session)"
+    resultDetail1:{
+      ja:(c)=>`連続正解数のベスト: ${c}`,
+      en:(c)=>`Best correct streak: ${c}`
     },
-    btnSubmit: { ja: "回答する", en: "Submit answer" },
-    btnNext: { ja: "次の問題へ", en: "Next question" },
-    expTitle: { ja: "解説", en: "Explanation" },
-    statCorrect: { ja: "正解数", en: "Correct" },
-    statAccuracy: { ja: "正答率", en: "Accuracy" },
-    levelBasic: { ja: "レベル: 基礎", en: "Level: Basic" },
-    levelInter: { ja: "レベル: 標準〜応用", en: "Level: Intermediate" },
-    qCounter: {
-      ja: (i,total)=>`問題 ${i} / ${total}`,
-      en: (i,total)=>`Question ${i} / ${total}`
+    resultDetail2:{
+      ja:(w)=>`間違えた問題: ${w} 問`,
+      en:(w)=>`Number of missed questions: ${w}`
     },
-    resultTitle: { ja: "結果", en: "Result" },
-    resultSummary: {
-      ja: (s,p,t)=>`${TOPIC_DEFS[t].ja}：20問中 ${s} 問正解（${p}%）でした。`,
-      en: (s,p,t)=>`${TOPIC_DEFS[t].en}: you answered ${s} of 20 questions correctly (${p}%).`
+    reviewTitle:{
+      ja:"間違えた問題（解説つき）",
+      en:"Missed questions (with explanations)"
     },
-    resultDetail1: {
-      ja: (c)=>`連続正解数のベスト: ${c}`,
-      en: (c)=>`Best correct streak: ${c}`
+    tagYour:{ ja:"あなたの回答", en:"Your answer" },
+    tagCorrect:{ ja:"正解", en:"Correct answer" },
+    tagWrong:{ ja:"不正解", en:"Wrong" },
+    btnRestartMain:{ ja:"もう一度 10問テスト", en:"Take another 10-question test" },
+    btnRestartReview:{ ja:"間違えた問題だけで再テスト", en:"Retest missed questions only" },
+    btnBackHome:{ ja:"ホームに戻る", en:"Back to home" },
+    footer:{
+      ja:"このアプリは UniCamillus 医学部レベルの一般化学を想定した個人学習用ツールです。成績は端末内ローカルに保存されます。",
+      en:"This app targets General Chemistry level for UniCamillus medical students. Scores are stored only on this device."
     },
-    resultDetail2: {
-      ja: (w)=>`間違えた問題: ${w} 問`,
-      en: (w)=>`Number of missed questions: ${w}`
-    },
-    reviewTitle: {
-      ja: "間違えた問題（解説つき）",
-      en: "Missed questions (with explanations)"
-    },
-    tagYour:   { ja: "あなたの回答",  en: "Your answer" },
-    tagCorrect:{ ja: "正解",          en: "Correct answer" },
-    tagWrong:  { ja: "不正解",        en: "Wrong" },
-    btnRestartMain: {
-      ja: "もう一度 20問テスト",
-      en: "Take another 20-question test"
-    },
-    btnRestartReview: {
-      ja: "間違えた問題だけで再テスト",
-      en: "Retest using only missed questions"
-    },
-    btnBackHome: {
-      ja: "ホームに戻る",
-      en: "Back to home"
-    },
-    footer: {
-      ja: "このアプリは UniCamillus 医学部レベルの一般化学を想定した個人学習用ツールです。成績は端末内ローカルに保存されます。",
-      en: "This app targets General Chemistry level for UniCamillus medical students. Scores are stored only on this device."
-    },
-    correctLabel: { ja: "正解", en: "Correct" },
-    wrongLabel: { ja: "不正解", en: "Wrong" }
+    correctLabel:{ ja:"正解", en:"Correct" },
+    wrongLabel:{ ja:"不正解", en:"Wrong" }
   };
 
-  // ====== 問題バンク（ベース問題） ======
-  // topic: thermo / equilibrium / acids / buffer / kinetics
+  // ====== 問題バンク（ここは前と同じ方針で増やせる） ======
   const BASE_QUESTIONS = [
     {
-      id: "thermo-1",
-      topic: "thermo",
-      level: "intermediate",
-      q: {
-        ja: "反応 A → B において ΔH = −40 kJ/mol, ΔS = −120 J/mol·K のとき、自発的になるのはどの温度領域ですか？",
-        en: "For the reaction A → B, ΔH = −40 kJ/mol and ΔS = −120 J/mol·K. In which temperature range is the reaction spontaneous?"
+      id:"thermo-1",
+      topic:"thermo",
+      level:"intermediate",
+      q:{
+        ja:"反応 A → B において ΔH = −40 kJ/mol, ΔS = −120 J/mol·K のとき、自発的になるのはどの温度領域ですか？",
+        en:"For reaction A → B with ΔH = −40 kJ/mol and ΔS = −120 J/mol·K, in which temperature range is it spontaneous?"
       },
-      choices: [
-        { ja: "すべての温度で自発的", en: "Spontaneous at all temperatures" },
-        { ja: "低温でのみ自発的", en: "Spontaneous only at low temperatures" },
-        { ja: "高温でのみ自発的", en: "Spontaneous only at high temperatures" },
-        { ja: "いかなる温度でも自発的でない", en: "Never spontaneous" },
-        { ja: "ΔH と ΔS からは判断できない", en: "Cannot be determined from ΔH and ΔS" }
+      choices:[
+        {ja:"すべての温度で自発的",en:"Spontaneous at all temperatures"},
+        {ja:"低温でのみ自発的",en:"Spontaneous only at low temperatures"},
+        {ja:"高温でのみ自発的",en:"Spontaneous only at high temperatures"},
+        {ja:"いかなる温度でも自発的でない",en:"Never spontaneous"},
+        {ja:"ΔH と ΔS からは判断できない",en:"Cannot be determined from ΔH and ΔS"}
       ],
-      correct: 1,
-      exp: {
-        ja: "ΔG = ΔH − TΔS。ΔH<0 かつ ΔS<0 のとき、低温では ΔH の効果が支配的になり ΔG<0 となるので、低温で自発的になります。",
-        en: "ΔG = ΔH − TΔS. With ΔH<0 and ΔS<0, the reaction is spontaneous at low T where the negative ΔH term dominates and ΔG<0."
+      correct:1,
+      exp:{
+        ja:"ΔG = ΔH − TΔS。ΔH<0 かつ ΔS<0 のとき、低温では ΔH が支配的になり ΔG<0 となるので低温で自発的。",
+        en:"ΔG = ΔH − TΔS. With ΔH<0 and ΔS<0, ΔG<0 at low temperature, so the reaction is spontaneous at low T."
       }
     },
     {
-      id: "thermo-2",
-      topic: "thermo",
-      level: "basic",
-      q: {
-        ja: "25 ℃ における平衡定数 K = 4.0×10⁻⁵ の反応の標準ギブズエネルギー ΔG° の符号は？",
-        en: "A reaction has an equilibrium constant K = 4.0×10⁻⁵ at 25 °C. What is the sign of ΔG°?"
+      id:"acid-1",
+      topic:"acids",
+      level:"basic",
+      q:{
+        ja:"Brønsted–Lowry の定義で酸とは何ですか？",
+        en:"According to Brønsted–Lowry, what is an acid?"
       },
-      choices: [
-        { ja: "正", en: "Positive" },
-        { ja: "負", en: "Negative" },
-        { ja: "ゼロ", en: "Zero" },
-        { ja: "温度だけで決まる", en: "Depends only on temperature" },
-        { ja: "情報が足りない", en: "Cannot be determined" }
+      choices:[
+        {ja:"電子対を受け取る物質",en:"Electron-pair acceptor"},
+        {ja:"プロトンを受け取る物質",en:"Proton (H⁺) acceptor"},
+        {ja:"プロトンを与える物質",en:"Proton (H⁺) donor"},
+        {ja:"電子対を与える物質",en:"Electron-pair donor"},
+        {ja:"pH を上げる物質",en:"Any substance that raises pH"}
       ],
-      correct: 0,
-      exp: {
-        ja: "ΔG° = −RT lnK。K<1 なら lnK<0 なので ΔG° は正になります。",
-        en: "ΔG° = −RT lnK. If K<1, lnK is negative, so ΔG° is positive."
-      }
-    },
-    {
-      id: "eq-1",
-      topic: "equilibrium",
-      level: "basic",
-      q: {
-        ja: "平衡 CaCO₃(s) ⇄ CaO(s) + CO₂(g) において、平衡定数 Kc の式に含めない種の組み合わせは？",
-        en: "For CaCO₃(s) ⇄ CaO(s) + CO₂(g), which species are omitted from the Kc expression?"
-      },
-      choices: [
-        { ja: "CaCO₃ のみ", en: "CaCO₃ only" },
-        { ja: "CaO のみ", en: "CaO only" },
-        { ja: "CO₂ のみ", en: "CO₂ only" },
-        { ja: "CaCO₃ と CaO", en: "CaCO₃ and CaO" },
-        { ja: "全て含める", en: "All are included" }
-      ],
-      correct: 3,
-      exp: {
-        ja: "純粋な固体は平衡定数の式に含めないので、Kc = [CO₂] となり、CaCO₃(s), CaO(s) は式から省きます。",
-        en: "Pure solids are omitted from the equilibrium expression, so Kc = [CO₂] and CaCO₃(s), CaO(s) are omitted."
-      }
-    },
-    {
-      id: "eq-2",
-      topic: "equilibrium",
-      level: "basic",
-      q: {
-        ja: "反応 N₂(g) + 3H₂(g) ⇄ 2NH₃(g) において、圧力を上げる（体積を減らす）と平衡はどちらに移動しますか？",
-        en: "For N₂(g) + 3H₂(g) ⇄ 2NH₃(g), what happens to the equilibrium when pressure is increased (volume decreased)?"
-      },
-      choices: [
-        { ja: "NH₃ 生成側へ移動", en: "Shifts toward NH₃" },
-        { ja: "反応物側へ移動", en: "Shifts toward reactants" },
-        { ja: "変化しない", en: "No change" },
-        { ja: "温度だけに依存", en: "Depends only on temperature" },
-        { ja: "予測できない", en: "Impossible to predict" }
-      ],
-      correct: 0,
-      exp: {
-        ja: "気体のモル数が 4→2 と減る方向（NH₃ 側）に平衡が移動し、圧力増加を打ち消そうとします（ル・シャトリエの原理）。",
-        en: "There are 4 mol gas on the left and 2 on the right, so the equilibrium shifts toward NH₃ to reduce pressure (Le Châtelier)."
-      }
-    },
-    {
-      id: "acid-1",
-      topic: "acids",
-      level: "basic",
-      q: {
-        ja: "Brønsted–Lowry の定義で酸とは何ですか？",
-        en: "According to Brønsted–Lowry theory, what is an acid?"
-      },
-      choices: [
-        { ja: "電子対を受け取る物質", en: "Electron-pair acceptor" },
-        { ja: "プロトンを受け取る物質", en: "Proton (H⁺) acceptor" },
-        { ja: "プロトンを与える物質", en: "Proton (H⁺) donor" },
-        { ja: "電子対を与える物質", en: "Electron-pair donor" },
-        { ja: "pH を上げる物質", en: "Any substance that raises pH" }
-      ],
-      correct: 2,
-      exp: {
-        ja: "Brønsted–Lowry 酸は「プロトン (H⁺) を与える物質」と定義されます。",
-        en: "A Brønsted–Lowry acid is defined as a proton donor."
-      }
-    },
-    {
-      id: "buffer-1",
-      topic: "buffer",
-      level: "intermediate",
-      q: {
-        ja: "弱酸 HA と共役塩基 A⁻ の緩衝溶液に少量の強酸を加えたとき、主にどのような変化が起こりますか？",
-        en: "In a buffer consisting of weak acid HA and its conjugate base A⁻, what mainly happens when a small amount of strong acid is added?"
-      },
-      choices: [
-        { ja: "pH が大きく低下する", en: "pH drops sharply" },
-        { ja: "pH はほとんど変わらない", en: "pH remains almost constant" },
-        { ja: "pH が上昇する", en: "pH increases" },
-        { ja: "[A⁻] が減少する", en: "[A⁻] decreases" },
-        { ja: "B と D の両方が正しい", en: "Both B and D are correct" }
-      ],
-      correct: 4,
-      exp: {
-        ja: "加えた H⁺ は主に A⁻ と反応して HA になり、[A⁻] は減少しますが pH の変化は小さく抑えられます。",
-        en: "Added H⁺ is neutralized by A⁻ forming HA; [A⁻] decreases but pH changes only slightly."
-      }
-    },
-    {
-      id: "kin-1",
-      topic: "kinetics",
-      level: "basic",
-      q: {
-        ja: "速度式 v = k[A][B] の反応について誤っている記述はどれですか？",
-        en: "For a reaction with rate law v = k[A][B], which statement is FALSE?"
-      },
-      choices: [
-        { ja: "全反応次数は 2 である", en: "Overall order is 2" },
-        { ja: "A に関して一次である", en: "First order in A" },
-        { ja: "B に関して一次である", en: "First order in B" },
-        { ja: "k の単位は s⁻¹ である", en: "k has units of s⁻¹" },
-        { ja: "速度は [A] と [B] に依存する", en: "Rate depends on [A] and [B]" }
-      ],
-      correct: 3,
-      exp: {
-        ja: "二次反応（1 + 1）なので、k の単位は通常 M⁻¹·s⁻¹ になります。",
-        en: "The reaction is second-order overall, so k usually has units of M⁻¹·s⁻¹, not s⁻¹."
+      correct:2,
+      exp:{
+        ja:"Brønsted–Lowry 酸は「プロトン (H⁺) を与える物質」です。",
+        en:"A Brønsted–Lowry acid is a proton (H⁺) donor."
       }
     }
+    // ★ 他の分野の問題もここにどんどん足していく
   ];
 
-  // 自動生成 pH 問題で「酸・塩基」分野を大量に増やす（だいたい 500 問近くまで）
+  // 自動生成 pH 問題で酸・塩基の基礎レベルを大量追加
   const AUTO_QUESTIONS = [];
-  function generatePHQuestions(n) {
-    for (let i = 0; i < n; i++) {
-      const mantissa = Math.floor(Math.random()*9)+1; //1〜9
-      const exponent = Math.floor(Math.random()*7)+1; //1〜7
-      const concString = `${mantissa}×10⁻${exponent}`;
-      const pHtrue = exponent - Math.log10(mantissa);
+  function generatePHQuestions(n){
+    for(let i=0;i<n;i++){
+      const m = Math.floor(Math.random()*9)+1;
+      const e = Math.floor(Math.random()*7)+1;
+      const conc = `${m}×10⁻${e}`;
+      const pHtrue = e - Math.log10(m);
       const pHround = Math.round(pHtrue*100)/100;
 
-      const choices = [];
+      const choices=[];
       const correctIndex = Math.floor(Math.random()*5);
-      for (let j=0;j<5;j++){
+      for(let j=0;j<5;j++){
         if(j===correctIndex){
           choices.push(pHround);
-        } else {
-          let delta = (Math.random()*1.2 - 0.6);
+        }else{
+          let delta = Math.random()*1.2-0.6;
           let v = Math.round((pHtrue+delta)*100)/100;
-          if (v===pHround) v += 0.14;
+          if(v===pHround) v+=0.14;
           choices.push(v);
         }
       }
-
       AUTO_QUESTIONS.push({
-        id: `ph-${i}`,
-        topic: "acids",
-        level: "basic",
-        q: {
-          ja: `[H₃O⁺] = ${concString} M の水溶液の pH（小数第2位まで）は？`,
-          en: `What is the pH (to two decimal places) of a solution with [H₃O⁺] = ${concString} M?`
+        id:`ph-${i}`,
+        topic:"acids",
+        level:"basic",
+        q:{
+          ja:`[H₃O⁺] = ${conc} M の水溶液の pH（小数第2位まで）は？`,
+          en:`What is the pH (to two decimal places) of a solution with [H₃O⁺] = ${conc} M?`
         },
-        choices: choices.map(v=>({
+        choices:choices.map(v=>({
           ja:`pH ≈ ${v.toFixed(2)}`,
           en:`pH ≈ ${v.toFixed(2)}`
         })),
-        correct: correctIndex,
-        exp: {
-          ja:`pH = −log[H₃O⁺] より pH ≈ ${pHround.toFixed(2)} となります。`,
-          en:`Using pH = −log[H₃O⁺], the pH is about ${pHround.toFixed(2)}.`
+        correct:correctIndex,
+        exp:{
+          ja:`pH = −log[H₃O⁺] より pH ≈ ${pHround.toFixed(2)}。`,
+          en:`Using pH = −log[H₃O⁺], pH ≈ ${pHround.toFixed(2)}.`
         }
       });
     }
   }
-  generatePHQuestions(480); // BASE(数問) + 480 ≒ 500 問
+  generatePHQuestions(200); // とりあえず200問追加（あとで増やせる）
 
   const QUESTION_BANK = BASE_QUESTIONS.concat(AUTO_QUESTIONS);
 
-  // ====== DOM 要素 ======
+  // ====== DOM ======
   const screenHome   = document.getElementById("screen-home");
   const screenQuiz   = document.getElementById("screen-quiz");
   const screenResult = document.getElementById("screen-result");
 
-  const subtitle = document.getElementById("subtitle");
-  const homeText = document.getElementById("home-text");
-  const topicTitle = document.getElementById("topic-title");
+  const subtitle     = document.getElementById("subtitle");
+  const homeText     = document.getElementById("home-text");
+  const topicTitle   = document.getElementById("topic-title");
+  const diffTitle    = document.getElementById("diff-title");
   const topicButtonsDiv = document.getElementById("topic-buttons");
+  const diffButtonsDiv  = document.getElementById("difficulty-buttons");
 
   const btnStartMain   = document.getElementById("btn-start-main");
   const btnStartReview = document.getElementById("btn-start-review");
   const btnRestartMain = document.getElementById("btn-restart-main");
   const btnRestartReview = document.getElementById("btn-restart-review");
   const btnBackHome    = document.getElementById("btn-back-home");
+  const btnQuitHome    = document.getElementById("btn-quit-home");
 
-  const qCounter = document.getElementById("q-counter");
-  const qTopic   = document.getElementById("q-topic");
-  const badgeText= document.getElementById("badge-text");
-  const qText    = document.getElementById("q-text");
+  const qCounter   = document.getElementById("q-counter");
+  const qTopic     = document.getElementById("q-topic");
+  const badgeText  = document.getElementById("badge-text");
+  const qText      = document.getElementById("q-text");
   const optionsDiv = document.getElementById("options");
-  const btnSubmit = document.getElementById("btn-submit");
-  const btnNext   = document.getElementById("btn-next");
+  const btnSubmit  = document.getElementById("btn-submit");
+  const btnNext    = document.getElementById("btn-next");
+
   const explanationBox = document.getElementById("explanation-box");
-  const expTitle  = document.getElementById("exp-title");
-  const expBody   = document.getElementById("exp-body");
+  const expTitle       = document.getElementById("exp-title");
+  const expBody        = document.getElementById("exp-body");
+
   const statCorrect = document.getElementById("stat-correct");
   const statAccuracy= document.getElementById("stat-accuracy");
   const progressBar = document.getElementById("progress-bar");
@@ -687,10 +561,10 @@
   const reviewTitle   = document.getElementById("review-title");
   const reviewList    = document.getElementById("review-list");
 
-  const lastSessionRow = document.getElementById("last-session-row");
-  const lastScoreText  = document.getElementById("last-score-text");
-  const lastDateText   = document.getElementById("last-date-text");
-  const footer         = document.getElementById("footer");
+  const lastSessionRow= document.getElementById("last-session-row");
+  const lastScoreText = document.getElementById("last-score-text");
+  const lastDateText  = document.getElementById("last-date-text");
+  const footer        = document.getElementById("footer");
 
   // ====== 共通関数 ======
   function showScreen(name){
@@ -699,15 +573,14 @@
     if(name==="quiz") screenQuiz.classList.add("active");
     if(name==="result") screenResult.classList.add("active");
   }
-  function shuffle(arr){
-    const a = arr.slice();
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]] = [a[j],a[i]];
+  function shuffle(a){
+    const arr=a.slice();
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
     }
-    return a;
+    return arr;
   }
-
   function getStoredWrongIds(){
     try{
       const raw = localStorage.getItem("chem_last_wrong_ids");
@@ -716,99 +589,98 @@
       return Array.isArray(arr)?arr:[];
     }catch{ return []; }
   }
-  function updateLastSessionFromStorage(){
+  function updateLastSession(){
     const score = localStorage.getItem("chem_last_score");
     const date  = localStorage.getItem("chem_last_date");
-    if(!score || !date){
-      lastSessionRow.style.display = "none";
+    if(!score||!date){
+      lastSessionRow.style.display="none";
       btnStartReview.disabled = !getStoredWrongIds().length;
       return;
     }
-    const d = new Date(date);
-    lastSessionRow.style.display = "flex";
+    lastSessionRow.style.display="flex";
+    const d=new Date(date);
     lastScoreText.textContent =
-      (lang==="ja" ? "前回のスコア: " : "Last score: ") + score + "%";
+      (lang==="ja"?"前回のスコア: ":"Last score: ")+score+"%";
     lastDateText.textContent =
-      (lang==="ja" ? "実施日: " : "Date: ") + d.toLocaleString();
+      (lang==="ja"?"実施日: ":"Date: ")+d.toLocaleString();
     btnStartReview.disabled = !getStoredWrongIds().length;
   }
 
   // ====== 言語切り替え ======
+  function renderTopicButtons(){
+    topicButtonsDiv.innerHTML="";
+    Object.keys(TOPIC_DEFS).forEach(key=>{
+      const b=document.createElement("button");
+      b.className="topic-btn"+(key===selectedTopic?" active":"");
+      b.textContent=TOPIC_DEFS[key][lang];
+      b.onclick=()=>{selectedTopic=key;renderTopicButtons();};
+      topicButtonsDiv.appendChild(b);
+    });
+  }
+  function renderDiffButtons(){
+    diffButtonsDiv.innerHTML="";
+    Object.keys(LEVEL_DEFS).forEach(key=>{
+      const b=document.createElement("button");
+      b.className="difficulty-btn"+(key===selectedLevel?" active":"");
+      b.textContent=LEVEL_DEFS[key][lang];
+      b.onclick=()=>{selectedLevel=key;renderDiffButtons();};
+      diffButtonsDiv.appendChild(b);
+    });
+  }
+
   function applyLanguage(){
     subtitle.textContent = TEXT.subtitle[lang];
     homeText.textContent = TEXT.homeText[lang];
     topicTitle.textContent = TEXT.topicTitle[lang];
+    diffTitle.textContent = TEXT.diffTitle[lang];
     btnStartMain.textContent = TEXT.btnMain[lang];
     btnStartReview.textContent = TEXT.btnReview[lang];
     btnSubmit.textContent = TEXT.btnSubmit[lang];
-    btnNext.textContent = TEXT.btnNext[lang];
-    expTitle.textContent = TEXT.expTitle[lang];
+    btnNext.textContent   = TEXT.btnNext[lang];
+    btnQuitHome.textContent = TEXT.btnQuitHome[lang];
     btnRestartMain.textContent = TEXT.btnRestartMain[lang];
     btnRestartReview.textContent = TEXT.btnRestartReview[lang];
     btnBackHome.textContent = TEXT.btnBackHome[lang];
-    footer.textContent = TEXT.footer[lang];
     reviewTitle.textContent = TEXT.reviewTitle[lang];
+    footer.textContent      = TEXT.footer[lang];
 
-    document.getElementById("lang-ja").classList.toggle("active", lang==="ja");
-    document.getElementById("lang-en").classList.toggle("active", lang==="en");
+    document.getElementById("lang-ja").classList.toggle("active",lang==="ja");
+    document.getElementById("lang-en").classList.toggle("active",lang==="en");
 
-    // トピックボタン再描画
     renderTopicButtons();
-    updateLastSessionFromStorage();
-
-    if(screenQuiz.classList.contains("active")) renderQuestion();
-    if(screenResult.classList.contains("active")) renderResult();
+    renderDiffButtons();
+    updateLastSession();
   }
 
-  document.getElementById("lang-ja").onclick = ()=>{ lang="ja"; applyLanguage(); };
-  document.getElementById("lang-en").onclick = ()=>{ lang="en"; applyLanguage(); };
-
-  // ====== トピックボタン（ホーム画面） ======
-  function renderTopicButtons(){
-    topicButtonsDiv.innerHTML = "";
-    Object.keys(TOPIC_DEFS).forEach(key=>{
-      const b = document.createElement("button");
-      b.className = "topic-btn" + (key===selectedTopic?" active":"");
-      b.textContent = TOPIC_DEFS[key][lang];
-      b.onclick = ()=>{
-        selectedTopic = key;
-        renderTopicButtons();
-      };
-      topicButtonsDiv.appendChild(b);
-    });
-  }
+  document.getElementById("lang-ja").onclick=()=>{lang="ja";applyLanguage();};
+  document.getElementById("lang-en").onclick=()=>{lang="en";applyLanguage();};
 
   // ====== セッション開始 ======
   function startSession(mode){
     let pool;
     if(mode==="review"){
-      const wrongIds = getStoredWrongIds();
-      pool = QUESTION_BANK.filter(q=>wrongIds.includes(q.id));
-      if(!pool.length){
-        pool = QUESTION_BANK;
-      }
-      // topicは選ばない（復習は混合）
+      const ids=getStoredWrongIds();
+      pool = QUESTION_BANK.filter(q=>ids.includes(q.id));
+      if(!pool.length) pool = QUESTION_BANK;
     } else {
-      pool = QUESTION_BANK.filter(q =>
-        selectedTopic==="all" ? true : q.topic===selectedTopic
-      );
-      if(!pool.length){
-        // もしそのトピックだけだと少なすぎる場合は全体から
-        pool = QUESTION_BANK;
-      }
+      pool = QUESTION_BANK.filter(q=>{
+        const topicOK = (selectedTopic==="all") || (q.topic===selectedTopic);
+        const levelOK = (selectedLevel==="all") || (q.level===selectedLevel);
+        return topicOK && levelOK;
+      });
+      if(!pool.length) pool = QUESTION_BANK;
     }
 
-    sessionQuestions = shuffle(pool).slice(0, TOTAL_PER_SESSION);
+    sessionQuestions = shuffle(pool).slice(0,TOTAL_PER_SESSION);
     sessionAnswers = [];
-    currentIndex = 0;
-    score = 0;
-    bestStreak = 0;
-    currentStreak = 0;
+    currentIndex=0;
+    score=0;
+    bestStreak=0;
+    currentStreak=0;
 
-    btnSubmit.style.display = "block";
-    btnNext.style.display = "none";
-    btnSubmit.disabled = false;
-    explanationBox.style.display = "none";
+    btnSubmit.style.display="block";
+    btnNext.style.display="none";
+    explanationBox.style.display="none";
 
     showScreen("quiz");
     renderQuestion();
@@ -816,27 +688,25 @@
 
   // ====== 問題表示 ======
   function renderQuestion(){
-    const q = sessionQuestions[currentIndex];
+    const q=sessionQuestions[currentIndex];
     if(!q) return;
-
-    qCounter.textContent = TEXT.qCounter[lang](currentIndex+1, TOTAL_PER_SESSION);
+    qCounter.textContent = TEXT.qCounter[lang](currentIndex+1,TOTAL_PER_SESSION);
     qTopic.textContent   = TOPIC_DEFS[q.topic]?.[lang] || "";
-    badgeText.textContent = q.level==="basic" ? TEXT.levelBasic[lang] : TEXT.levelInter[lang];
-    qText.textContent = q.q[lang];
+    badgeText.textContent = (q.level==="basic"?TEXT.levelBasic[lang]:TEXT.levelInter[lang]);
+    qText.textContent    = q.q[lang];
 
-    optionsDiv.innerHTML = "";
+    optionsDiv.innerHTML="";
     q.choices.forEach((c,idx)=>{
-      const btn = document.createElement("button");
-      btn.className = "opt-btn";
-      btn.dataset.index = idx;
-      const letter = document.createElement("span");
-      letter.className = "letter";
-      letter.textContent = String.fromCharCode(65+idx) + ".";
-      const txt = document.createElement("span");
-      txt.textContent = c[lang];
-      btn.appendChild(letter);
-      btn.appendChild(txt);
-      btn.onclick = ()=>{
+      const btn=document.createElement("button");
+      btn.className="opt-btn";
+      btn.dataset.index=idx;
+      const letter=document.createElement("span");
+      letter.className="letter";
+      letter.textContent=String.fromCharCode(65+idx)+".";
+      const txt=document.createElement("span");
+      txt.textContent=c[lang];
+      btn.appendChild(letter);btn.appendChild(txt);
+      btn.onclick=()=>{
         if(btnSubmit.disabled) return;
         Array.from(optionsDiv.children).forEach(b=>b.classList.remove("selected"));
         btn.classList.add("selected");
@@ -844,147 +714,127 @@
       optionsDiv.appendChild(btn);
     });
 
-    explanationBox.style.display = "none";
-    expBody.textContent = "";
+    explanationBox.style.display="none";
+    expBody.textContent="";
 
-    const progress = Math.round((currentIndex / TOTAL_PER_SESSION)*100);
-    progressBar.style.width = progress+"%";
+    const prog=Math.round((currentIndex/TOTAL_PER_SESSION)*100);
+    progressBar.style.width=prog+"%";
 
-    statCorrect.textContent = TEXT.statCorrect[lang] + ": " + score;
-    const acc = sessionAnswers.length ? Math.round(score/sessionAnswers.length*100):0;
-    statAccuracy.textContent = TEXT.statAccuracy[lang] + ": " + acc + "%";
+    statCorrect.textContent = TEXT.statCorrect[lang]+": "+score;
+    const acc=sessionAnswers.length?Math.round(score/sessionAnswers.length*100):0;
+    statAccuracy.textContent=TEXT.statAccuracy[lang]+": "+acc+"%";
   }
 
-  // ====== 回答処理 ======
-  btnSubmit.onclick = ()=>{
-    const q = sessionQuestions[currentIndex];
-    const selected = Array.from(optionsDiv.children).find(b=>b.classList.contains("selected"));
-    if(!selected) return;
-    const chosen = Number(selected.dataset.index);
+  // ====== 回答 ======
+  btnSubmit.onclick=()=>{
+    const q=sessionQuestions[currentIndex];
+    const sel=Array.from(optionsDiv.children).find(b=>b.classList.contains("selected"));
+    if(!sel) return;
+    const chosen=Number(sel.dataset.index);
+    const isCorrect = chosen===q.correct;
 
-    const isCorrect = chosen === q.correct;
-    if(isCorrect){
-      score++;
-      currentStreak++;
-      if(currentStreak>bestStreak) bestStreak=currentStreak;
-    } else {
-      currentStreak = 0;
-    }
-    sessionAnswers.push({ index: currentIndex, chosen, correct: q.correct, id: q.id });
+    if(isCorrect){score++;currentStreak++;if(currentStreak>bestStreak)bestStreak=currentStreak;}
+    else{currentStreak=0;}
+
+    sessionAnswers.push({index:currentIndex,chosen,correct:q.correct,id:q.id});
 
     Array.from(optionsDiv.children).forEach((b,idx)=>{
-      b.onclick = null;
+      b.onclick=null;
       if(idx===q.correct) b.classList.add("correct");
       if(idx===chosen && idx!==q.correct) b.classList.add("wrong");
     });
 
-    const tag = document.createElement("span");
-    tag.className = "state-tag";
-    tag.textContent = isCorrect ? TEXT.correctLabel[lang] : TEXT.wrongLabel[lang];
-    selected.appendChild(tag);
+    const tag=document.createElement("span");
+    tag.className="state-tag";
+    tag.textContent=isCorrect?TEXT.correctLabel[lang]:TEXT.wrongLabel[lang];
+    sel.appendChild(tag);
 
-    // 解説を必ず表示
-    explanationBox.style.display = "block";
+    explanationBox.style.display="block";
     expTitle.textContent = TEXT.expTitle[lang];
     expBody.textContent  = q.exp[lang];
 
-    statCorrect.textContent = TEXT.statCorrect[lang] + ": " + score;
-    const acc = Math.round(score/sessionAnswers.length*100);
-    statAccuracy.textContent = TEXT.statAccuracy[lang] + ": " + acc + "%";
+    statCorrect.textContent = TEXT.statCorrect[lang]+": "+score;
+    const acc=Math.round(score/sessionAnswers.length*100);
+    statAccuracy.textContent=TEXT.statAccuracy[lang]+": "+acc+"%";
 
-    btnSubmit.style.display = "none";
-    btnNext.style.display = "block";
+    btnSubmit.style.display="none";
+    btnNext.style.display="block";
   };
 
-  btnNext.onclick = ()=>{
+  btnNext.onclick=()=>{
     if(currentIndex < TOTAL_PER_SESSION-1){
       currentIndex++;
-      btnSubmit.style.display = "block";
-      btnNext.style.display = "none";
-      btnSubmit.disabled = false;
-      explanationBox.style.display = "none";
+      btnSubmit.style.display="block";
+      btnNext.style.display="none";
+      explanationBox.style.display="none";
       renderQuestion();
-    } else {
+    }else{
       finishSession();
     }
   };
 
-  // ====== 結果・復習 ======
+  // ====== 結果 ======
   function finishSession(){
-    const percent = Math.round(score/TOTAL_PER_SESSION*100);
-    const wrongCount = TOTAL_PER_SESSION - score;
+    const percent=Math.round(score/TOTAL_PER_SESSION*100);
+    const wrong=TOTAL_PER_SESSION-score;
 
-    // 復習用データを保存
-    const wrongIds = sessionAnswers.filter(a=>a.chosen!==a.correct).map(a=>a.id);
-    localStorage.setItem("chem_last_wrong_ids", JSON.stringify(wrongIds));
-    localStorage.setItem("chem_last_score", String(percent));
-    localStorage.setItem("chem_last_date", new Date().toISOString());
-    localStorage.setItem("chem_last_best_streak", String(bestStreak));
-    localStorage.setItem("chem_last_topic", selectedTopic);
+    const wrongIds=sessionAnswers.filter(a=>a.chosen!==a.correct).map(a=>a.id);
+    localStorage.setItem("chem_last_wrong_ids",JSON.stringify(wrongIds));
+    localStorage.setItem("chem_last_score",String(percent));
+    localStorage.setItem("chem_last_date",new Date().toISOString());
 
-    renderResult();
+    renderResult(percent,wrong);
     showScreen("result");
-    updateLastSessionFromStorage();
+    updateLastSession();
   }
 
-  function renderResult(){
-    const percent = Math.round(score/TOTAL_PER_SESSION*100);
-    const wrongCount = TOTAL_PER_SESSION - score;
-
+  function renderResult(percent,wrongCount){
     resultTitle.textContent = TEXT.resultTitle[lang];
-    resultSummary.textContent = TEXT.resultSummary[lang](score, percent, selectedTopic);
+    resultSummary.textContent = TEXT.resultSummary[lang](score,percent,selectedTopic,selectedLevel);
     resultDetail1.textContent = TEXT.resultDetail1[lang](bestStreak);
     resultDetail2.textContent = TEXT.resultDetail2[lang](wrongCount);
 
-    // 間違えた問題リスト（解説つき）
-    reviewList.innerHTML = "";
-    const missed = sessionAnswers.filter(a=>a.chosen!==a.correct);
+    reviewList.innerHTML="";
+    const missed=sessionAnswers.filter(a=>a.chosen!==a.correct);
     if(missed.length){
       reviewTitle.textContent = TEXT.reviewTitle[lang];
       missed.forEach(m=>{
-        const q = sessionQuestions[m.index];
-        const li = document.createElement("li");
-
-        const qText = document.createElement("div");
-        qText.textContent = q.q[lang];
-
-        const your = document.createElement("div");
-        your.className = "tag-wrong";
-        your.textContent = TEXT.tagYour[lang] + ": " + q.choices[m.chosen][lang];
-
-        const corr = document.createElement("div");
-        corr.className = "tag-correct";
-        corr.textContent = TEXT.tagCorrect[lang] + ": " + q.choices[q.correct][lang];
-
-        const exp = document.createElement("div");
-        exp.className = "tag-exp";
-        exp.textContent = TEXT.expTitle[lang] + ": " + q.exp[lang];
-
-        li.appendChild(qText);
-        li.appendChild(your);
-        li.appendChild(corr);
-        li.appendChild(exp);
+        const q=sessionQuestions[m.index];
+        const li=document.createElement("li");
+        const qd=document.createElement("div");qd.textContent=q.q[lang];
+        const yd=document.createElement("div");yd.className="tag-wrong";
+        yd.textContent=TEXT.tagYour[lang]+": "+q.choices[m.chosen][lang];
+        const cd=document.createElement("div");cd.className="tag-correct";
+        cd.textContent=TEXT.tagCorrect[lang]+": "+q.choices[q.correct][lang];
+        const ed=document.createElement("div");ed.className="tag-exp";
+        ed.textContent=TEXT.expTitle[lang]+": "+q.exp[lang];
+        li.appendChild(qd);li.appendChild(yd);li.appendChild(cd);li.appendChild(ed);
         reviewList.appendChild(li);
       });
-      reviewCard.style.display = "block";
-      btnRestartReview.disabled = false;
-    } else {
-      reviewCard.style.display = "none";
-      btnRestartReview.disabled = true;
+      reviewCard.style.display="block";
+      btnRestartReview.disabled=false;
+    }else{
+      reviewCard.style.display="none";
+      btnRestartReview.disabled=true;
     }
   }
 
-  // ====== ボタンイベント ======
-  btnStartMain.onclick   = ()=> startSession("main");
-  btnRestartMain.onclick = ()=> startSession("main");
-  btnStartReview.onclick = ()=> startSession("review");
-  btnRestartReview.onclick = ()=> startSession("review");
-  btnBackHome.onclick    = ()=> showScreen("home");
+  // ====== ボタン ======
+  btnStartMain.onclick   = ()=>startSession("main");
+  btnRestartMain.onclick = ()=>startSession("main");
+  btnStartReview.onclick = ()=>startSession("review");
+  btnRestartReview.onclick = ()=>startSession("review");
+  btnBackHome.onclick    = ()=>showScreen("home");
+  btnQuitHome.onclick    = ()=>{
+    // 現在の回を破棄してホームへ
+    showScreen("home");
+  };
 
-  // 初期化
+  // 初期表示
   renderTopicButtons();
+  renderDiffButtons();
   applyLanguage();
-  updateLastSessionFromStorage();
+  updateLastSession();
 </script>
 </body>
 </html>
