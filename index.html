@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemistry Quiz App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #007aff;
+      color: white;
+      font-size: 16px;
+    }
+    .lang {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .lang button {
+      flex: 1;
+      background: #555;
+    }
+    .lang button.active {
+      background: #007aff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1 id="title">Chemistry Quiz</h1>
+
+    <div class="lang">
+      <button id="jpBtn" class="active">日本語</button>
+      <button id="enBtn">English</button>
+    </div>
+
+    <p id="question"></p>
+
+    <div id="answers"></div>
+
+    <p id="result" style="font-weight:bold; font-size:18px; margin-top:20px;"></p>
+
+    <button onclick="nextQuestion()">Next</button>
+  </div>
+
+  <script>
+    const quizzes = [
+      {
+        jp: {
+          q: "水の化学式はどれ？",
+          a: ["H2O", "CO2", "O2"],
+          c: 0
+        },
+        en: {
+          q: "What is the chemical formula for water?",
+          a: ["H2O", "CO2", "O2"],
+          c: 0
+        }
+      },
+      {
+        jp: {
+          q: "塩酸の主成分は？",
+          a: ["HCl", "NaCl", "H2SO4"],
+          c: 0
+        },
+        en: {
+          q: "What is the main component of hydrochloric acid?",
+          a: ["HCl", "NaCl", "H2SO4"],
+          c: 0
+        }
+      },
+      {
+        jp: {
+          q: "酸と塩基の反応でできるものは？",
+          a: ["塩と水", "酸素", "二酸化炭素"],
+          c: 0
+        },
+        en: {
+          q: "What is produced by an acid-base reaction?",
+          a: ["Salt and water", "Oxygen", "Carbon dioxide"],
+          c: 0
+        }
+      }
+    ];
+
+    let current = 0;
+    let lang = "jp";
+
+    document.getElementById("jpBtn").onclick = () => switchLang("jp");
+    document.getElementById("enBtn").onclick = () => switchLang("en");
+
+    function switchLang(l) {
+      lang = l;
+      document.getElementById("jpBtn").classList.toggle("active", l === "jp");
+      document.getElementById("enBtn").classList.toggle("active", l === "en");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = quizzes[current][lang];
+      document.getElementById("question").textContent = q.q;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      
+      q.a.forEach((ans, idx) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.onclick = () => check(idx);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById("result").textContent = "";
+    }
+
+    function check(i) {
+      const correct = quizzes[current][lang].c;
+      const result = document.getElementById("result");
+      if (i === correct) {
+        result.textContent = lang === "jp" ? "正解！" : "Correct!";
+        result.style.color = "green";
+      } else {
+        result.textContent = lang === "jp" ? "不正解…" : "Wrong...";
+        result.style.color = "red";
+      }
+    }
+
+    function nextQuestion() {
+      current = (current + 1) % quizzes.length;
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
